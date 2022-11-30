@@ -1,0 +1,60 @@
+In the graphical editor, on the FILES pane, select the Program.cs file to open it in the editor.
+
+Delete the entire contents of the Program.cs file.
+
+Copy and paste the following code into the Program.cs file:
+
+public class Program
+{
+    public static void Main(string[] args)
+    {        
+        // Check if network is available
+        if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+        {
+            System.Console.WriteLine("Current IP Addresses:");
+
+            // Get host entry for current hostname
+            string hostname = System.Net.Dns.GetHostName();
+            System.Net.IPHostEntry host = System.Net.Dns.GetHostEntry(hostname);
+            
+            // Iterate over each IP address and render their values
+            foreach(System.Net.IPAddress address in host.AddressList)
+            {
+                System.Console.WriteLine($"\t{address}");
+            }
+        }
+        else
+        {
+            System.Console.WriteLine("No Network Connection");
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Docker file 
+
+
+# Start using the .NET 6 SDK container image
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
+
+# Change current working directory
+WORKDIR /app
+
+# Copy existing files from host machine
+COPY . ./
+
+# Publish application to the "out" folder
+RUN dotnet publish --configuration Release --output out
+
+# Start container by running application DLL
+ENTRYPOINT ["dotnet", "out/ipcheck.dll"]
+
+
+
+
+
+
+
+
+
